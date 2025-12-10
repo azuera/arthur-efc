@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { fetchApi } from '@/src/lib/api';
+import { recipesApi } from '@/src/lib/api';
 
 interface IngredientForm {
   label: string;
@@ -42,16 +42,13 @@ export default function NewRecipePage() {
     setSubmitting(true);
 
     try {
-      const response = await fetchApi('/recipes', {
-        method: 'POST',
-        body: JSON.stringify({
-          title,
-          category,
-          steps,
-          picture,
-          servings,
-          ingredients: ingredients.filter(ing => ing.label && ing.unit && ing.quantity > 0)
-        }),
+      await recipesApi.create({
+        title,
+        category,
+        steps,
+        picture,
+        servings,
+        ingredients: ingredients.filter(ing => ing.label && ing.unit && ing.quantity > 0)
       });
 
       router.push('/recipes');

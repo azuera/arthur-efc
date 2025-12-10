@@ -1,9 +1,8 @@
-// src/app/recipes/page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { fetchApi } from '@/src/lib/api';
+import { recipesApi } from '@/src/lib/api';
 import { Recipe } from '@/src/types/recipes';
 
 export default function RecipesListPage() {
@@ -13,7 +12,7 @@ export default function RecipesListPage() {
   useEffect(() => {
     async function loadRecipes() {
       try {
-        const data = await fetchApi<any>('/recipes');
+        const data = await recipesApi.getAll();
         console.log('Liste des recettes:', data);
         setRecipes(data.member || []);
       } catch (error) {

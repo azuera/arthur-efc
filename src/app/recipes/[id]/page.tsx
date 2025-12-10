@@ -1,10 +1,9 @@
-// src/app/recipes/[id]/page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { fetchApi } from '@/src/lib/api';
+import { recipesApi } from '@/src/lib/api';
 import { RecipeWithIngredients } from '@/src/types/recipes';
 
 export default function RecipeDetailPage() {
@@ -17,26 +16,9 @@ export default function RecipeDetailPage() {
   useEffect(() => {
     async function loadRecipe() {
       try {
-        const data = await fetchApi<any>(`/recipes/${id}`);
+        const data = await recipesApi.getById(id);
         console.log('Détail recette:', data);
-        
-        // Charger les ingrédients si ce n'est pas inclus
-        let ingredients = [];
-        if (!data.ingredients || data.ingredients.length === 0) {
-          try {
-            const ingredientsData = await fetchApi<any>(`/recipes/${id}/ingredients`);
-            ingredients = ingredientsData || [];
-          } catch (ingError) {
-            console.error('Erreur chargement ingrédients:', ingError);
-          }
-        } else {
-          ingredients = data.ingredients;
-        }
-        
-        setRecipe({
-          ...data,
-          ingredients
-        });
+        setRecipe(data);
       } catch (error) {
         console.error('Error loading recipe:', error);
       } finally {
